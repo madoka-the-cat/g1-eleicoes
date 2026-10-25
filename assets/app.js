@@ -201,10 +201,11 @@ function renderTable() {
       head.setAttribute("role", "row");
       const section = state.data.sections.find((s) => s.name === name);
       const reporting = section.countries.filter((c) => c.has_data).length;
-      head.append(name);
-      const detail = document.createElement("span");
-      detail.textContent = ` · ${reporting} com dados de ${section.countries.length} países`;
-      head.append(detail);
+      const label = document.createElement("span");
+      label.setAttribute("role", "columnheader");
+      label.setAttribute("aria-colspan", "3");
+      label.textContent = `${name} · ${reporting} com dados de ${section.countries.length} países`;
+      head.append(label);
       rows.append(head);
       for (const c of list) rows.append(countryRow(c, false));
     }
@@ -246,8 +247,7 @@ function renderTabs() {
     btn.type = "button";
     btn.className = "tab";
     btn.dataset.value = value;
-    btn.setAttribute("role", "tab");
-    btn.setAttribute("aria-selected", String(state.section === value));
+    btn.setAttribute("aria-pressed", String(state.section === value));
     btn.textContent = value === "all" ? label : `${label} · ${count}`;
     btn.addEventListener("click", () => {
       state.section = value;

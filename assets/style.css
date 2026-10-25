@@ -341,7 +341,7 @@ h2 {
 
 .tab:hover { color: var(--text); }
 
-.tab[aria-selected="true"] {
+.tab[aria-pressed="true"] {
   background: rgba(255, 255, 255, 0.12);
   color: var(--text);
   font-weight: 600;
