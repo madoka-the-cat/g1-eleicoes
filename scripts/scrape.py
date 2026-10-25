@@ -36,7 +36,7 @@ SECTIONS = {
 TURNO_RE = re.compile(r"^(2|1)º turno:\s*(.+)$", re.S)
 VOTE_RE = re.compile(
     r"^(Lula|Flávio(?: Bolsonaro)?),\s*([\d.]+)\s*votos?"
-    r"(?:\s*\(([\d,]+)%\))?$"
+    r"(?:\s*\(([\d,]+)\s*%\))?$"
 )
 PENDING = "ainda não há dados disponíveis"
 
@@ -110,6 +110,8 @@ def parse(html_text: str) -> dict:
                 break
         if not lines or not any("turno" in line for line in lines):
             continue  # título de outro conteúdo, não um país
+
+        section = section or "Outros"
 
         lula = flavio = 0
         lula_pct = flavio_pct = None
