@@ -9,12 +9,12 @@ considerado válido; em caso de falha, sai com código != 0 e preserva a
 from __future__ import annotations
 
 import html
+import http.client
 import json
 import re
 import sys
 import tempfile
 import time
-import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -57,7 +57,7 @@ def fetch(url: str, attempts: int = 3) -> str:
         try:
             with urllib.request.urlopen(req, timeout=45) as resp:
                 return resp.read().decode("utf-8", "replace")
-        except (urllib.error.URLError, TimeoutError) as exc:
+        except (OSError, http.client.HTTPException) as exc:
             last = exc
             if attempt + 1 < attempts:
                 time.sleep(3 * (attempt + 1))
