@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Coletar dados do g1
         id: scrape
@@ -42,15 +42,30 @@ jobs:
 
       - name: Salvar dados coletados
         run: |
-          if git diff --quiet -- data/results.json; then
-            echo "Sem mudanças nos dados."
-            exit 0
-          fi
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/results.json
-          git commit -m "chore: resultados atualizados em $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git push
+
+          # Outra execução pode ter publicado enquanto esta rodava: recoloca o
+          # HEAD no topo do remoto e tenta de novo antes de desistir.
+          for attempt in 1 2 3; do
+            git fetch --quiet origin main
+            git reset --quiet --soft origin/main
+            git add data/results.json
+            if git diff --cached --quiet; then
+              echo "Sem mudanças nos dados."
+              exit 0
+            fi
+            git commit --quiet -m "chore: resultados atualizados em $(date -u +'%Y-%m-%d %H:%M UTC')"
+            if git push --quiet origin HEAD:main; then
+              echo "Dados publicados no repositório."
+              exit 0
+            fi
+            echo "Push rejeitado (tentativa $attempt); repetindo."
+            sleep 3
+          done
+          echo "::error::Não foi possível publicar data/results.json após 3 tentativas."
+          exit 1
 
       - name: Preparar site
         run: |
@@ -58,10 +73,10 @@ jobs:
           cp -r index.html assets data dist/
 
       - name: Upload do site
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
       - name: Publicar no GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
