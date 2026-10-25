@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Votação no exterior — 2º turno Lula × Flávio Bolsonaro</title>
+<meta name="description" content="Apuração dos votos de brasileiros no exterior no 2º turno das eleições presidenciais de 2026: percentuais totais e por país, com os números originais do g1/TSE.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b1220'/%3E%3Cpath d='M32 10 54 32 32 54 10 32Z' fill='%23f5c518'/%3E%3Ccircle cx='32' cy='32' r='10' fill='%230b6efd'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="backdrop" aria-hidden="true"></div>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow"><span class="dot"></span> Apuração no exterior · TSE</p>
+    <h1>2º turno <span class="sep">·</span> <span class="names">Lula <em>&times;</em> Flávio Bolsonaro</span></h1>
+    <p class="lede">Os votos dos brasileiros que vivem fora do país, país por país, com os números originais divulgados pelo g1 a partir dos boletins de urna do TSE.</p>
+    <div class="meta">
+      <span id="updated" class="pill">carregando dados…</span>
+      <span id="freshness" class="pill pill--muted" hidden></span>
+      <a id="source" class="pill pill--link" href="#" target="_blank" rel="noopener">matéria original no g1 ↗</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="app">
+  <section class="scoreboard" aria-labelledby="totais">
+    <div class="scoreboard__head">
+      <h2 id="totais">Total no exterior</h2>
+      <p id="totals-note">Percentuais sobre os votos válidos (Lula + Flávio) dos países já divulgados.</p>
+    </div>
+
+    <div class="cands">
+      <article class="cand cand--lula">
+        <header>
+          <span class="swatch" aria-hidden="true"></span>
+          <h3>Lula</h3>
+        </header>
+        <p class="cand__pct"><span id="lula-pct">—</span><small>%</small></p>
+        <p class="cand__votes"><strong id="lula-votes">—</strong> votos</p>
+      </article>
+
+      <article class="cand cand--flavio">
+        <header>
+          <span class="swatch" aria-hidden="true"></span>
+          <h3>Flávio Bolsonaro</h3>
+        </header>
+        <p class="cand__pct"><span id="flavio-pct">—</span><small>%</small></p>
+        <p class="cand__votes"><strong id="flavio-votes">—</strong> votos</p>
+      </article>
+    </div>
+
+    <div class="splitbar" aria-hidden="true">
+      <span id="bar-lula" class="splitbar__lula"></span>
+      <span id="bar-flavio" class="splitbar__flavio"></span>
+    </div>
+
+    <ul class="stats">
+      <li><span id="stat-reporting">—</span><small>países com boletins</small></li>
+      <li><span id="stat-valid">—</span><small>votos válidos apurados</small></li>
+      <li><span id="stat-lula">—</span><small>países com Lula à frente</small></li>
+      <li><span id="stat-flavio">—</span><small>países com Flávio à frente</small></li>
+    </ul>
+    <p class="leader" id="leader" hidden></p>
+  </section>
+
+  <section class="board" aria-labelledby="paises">
+    <div class="board__head">
+      <h2 id="paises">Resultado por país</h2>
+      <div class="controls">
+        <div class="tabs" role="tablist" aria-label="Filtrar por região" id="tabs"></div>
+        <label class="toggle">
+          <input type="checkbox" id="only-data" checked>
+          <span>Só países com dados <b id="only-data-count"></b></span>
+        </label>
+        <label class="select">
+          <span>Ordenar</span>
+          <select id="sort">
+            <option value="alpha">A–Z</option>
+            <option value="votes">Mais votos</option>
+            <option value="margin">Maior margem</option>
+            <option value="lula">Mais votos p/ Lula</option>
+            <option value="flavio">Mais votos p/ Flávio</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="table" id="table" role="table" aria-label="Votos por país">
+      <div class="thead" role="row">
+        <span role="columnheader">País</span>
+        <span role="columnheader" class="th-cand"><i class="swatch swatch--lula"></i>Lula</span>
+        <span role="columnheader" class="th-cand"><i class="swatch swatch--flavio"></i>Flávio</span>
+      </div>
+      <div id="rows" role="rowgroup"></div>
+    </div>
+
+    <p class="empty" id="empty" hidden>Nenhum país com boletins divulgados ainda.</p>
+
+    <details class="pending" id="pending-wrap">
+      <summary>Países sem dados divulgados até agora <b id="pending-count"></b></summary>
+      <div id="pending-list" class="chips"></div>
+    </details>
+  </section>
+
+  <p class="footnote">
+    <strong>≈</strong> percentual calculado a partir dos votos, porque o g1 ainda não publicou o
+    percentual deste país. Percentuais totais são calculados sobre os votos válidos
+    (Lula + Flávio) dos países já divulgados e mudam a cada atualização.
+    Números e percentuais publicados são os originais do g1/TSE.
+  </p>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Fonte: <a href="https://g1.globo.com/mundo/noticia/2026/10/25/votacao-no-exterior-confira-os-resultados-do-2o-turno-entre-lula-e-flavio-bolsonaro.ghtml" target="_blank" rel="noopener">g1</a> · dados do TSE. Atualização automática a cada 20 minutos.</p>
+    <p>Projeto independente, sem vínculo com o g1 ou com os partidos.</p>
+  </div>
+</footer>
+
+<noscript><p class="noscript">Este site precisa de JavaScript para exibir os resultados.</p></noscript>
+<script src="assets/app.js" defer></script>
+</body>
+</html>
