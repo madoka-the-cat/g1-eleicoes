@@ -190,21 +190,17 @@ function renderTable() {
   $("empty").hidden = items.length > 0;
 
   if (state.sort === "alpha") {
-    const groups = new Map();
-    for (const c of items) {
-      if (!groups.has(c.section)) groups.set(c.section, []);
-      groups.get(c.section).push(c);
-    }
-    for (const [name, list] of groups) {
+    for (const section of state.data.sections) {
+      const list = items.filter((c) => c.section === section.name);
+      if (!list.length) continue;
       const head = document.createElement("div");
       head.className = "group";
       head.setAttribute("role", "row");
-      const section = state.data.sections.find((s) => s.name === name);
       const reporting = section.countries.filter((c) => c.has_data).length;
       const label = document.createElement("span");
       label.setAttribute("role", "columnheader");
       label.setAttribute("aria-colspan", "3");
-      label.textContent = `${name} · ${reporting} com dados de ${section.countries.length} países`;
+      label.textContent = `${section.name} · ${reporting} com dados de ${section.countries.length} países`;
       head.append(label);
       rows.append(head);
       for (const c of list) rows.append(countryRow(c, false));

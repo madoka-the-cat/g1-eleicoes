@@ -33,10 +33,13 @@ SECTIONS = {
     "ÁFRICA": "África",
 }
 
-TURNO_RE = re.compile(r"^(2|1)º turno:\s*(.+)$", re.S)
+TURNO_RE = re.compile(r"^(2|1)\s*[º°]\s*turno\s*:\s*(.+)$", re.S)
+# O g1 varia o formato entre países: "Lula, 418 votos (80,54%)",
+# "Flávio, 1.276 (31,80%)", "Flavio 47.306 votos (80,86%)", "1 voto (100%)".
 VOTE_RE = re.compile(
-    r"^(Lula|Flávio(?: Bolsonaro)?),\s*([\d.]+)\s*votos?"
-    r"(?:\s*\(([\d,]+)\s*%\))?$"
+    r"^(Lula|Fl[áa]vio(?:\s+Bolsonaro)?)\s*,?\s*([\d.]+)"
+    r"(?:\s+votos?)?"
+    r"(?:\s*\(\s*([\d,]+)\s*%\s*\))?$"
 )
 PENDING = "ainda não há dados disponíveis"
 
@@ -108,7 +111,7 @@ def parse(html_text: str) -> dict:
                     for li in re.findall(r"<li>(.*?)</li>", ul.group(1), re.S)
                 ]
                 break
-        if not lines or not any("turno" in line for line in lines):
+        if not lines or not any(TURNO_RE.match(line) for line in lines):
             continue  # título de outro conteúdo, não um país
 
         section = section or "Outros"
